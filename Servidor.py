@@ -1,59 +1,67 @@
 from flask import Flask, request, jsonify, render_template
 import cv2
-import os
+import numpy as np
 from fer import FER
 from flask_cors import CORS
 import base64
 from io import BytesIO
-import numpy as np
 from PIL import Image
 
 app = Flask(__name__)
-CORS(app)  # Esto habilita CORS
+CORS(app)
 
-# Inicializar el detector de emociones
 emotion_detector = FER()
 
-# Ruta para manejar el reconocimiento facial
 @app.route('/Reconocimiento_F', methods=['POST'])
 def reconocimiento_facial():
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            image_data = data.get("image_data")
-        
-            if not image_data:
-                return jsonify({"error": "No se recibió imagen"}), 400
-            
-            # Decodificar la imagen base64
-            image_data = image_data.split(",")[1]  # Eliminar el prefijo "data:image/jpeg;base64,"
-            img_bytes = base64.b64decode(image_data)
-            img = Image.open(BytesIO(img_bytes))
+    try:
+        data = request.get_json()
+        image_data = data.get("image_data")
 
-            # Convertir a imagen de OpenCV para el análisis
-            img = np.array(img)
-            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+        if not image_data:
+            return jsonify({"error": "No se recibió imagen"}), 400
 
-            # Detectar la emoción en la imagen
-            emotion, score = emotion_detector.top_emotion(img)
-        
-            if emotion:
-                return jsonify({"emotion": emotion, "score": score})
-            else:
-                return jsonify({"error": "No se pudo detectar ninguna emoción"}), 400
+        # Decodificar la imagen base64
+        image_data = image_data.split(",")[1]
+        img_bytes = base64.b64decode(image_data)
+        img = Image.open(BytesIO(img_bytes))
 
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+        # Convertir a array de numpy y luego a formato BGR para OpenCV
+        img_np = np.array(img)
+        img_cv2 = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
 
-# Ruta de prueba para verificar que el servidor está activo
-@app.route('/ping', methods=['GET'])
-def ping():
-    return jsonify({"message": "Servidor activo"}), 200
+        # Detectar rostros
+        gray = cv2.cvtColor(img_cv2, cv2.COLOR_BGR2GRAY)
+        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
-# Ruta para servir el frontend HTML
+        emotions_detected = []
+        for (x, y, w, h) in faces:
+            face = img_cv2[y:y+h, x:x+w]
+            emotions = emotion_detector.detect_emotions(face)
+            if emotions:
+                emotion, score = max(emotions[0]['emotions'].items(), key=lambda x: x[1])
+                cv2.rectangle(img_cv2, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                text = f"{emotion}: {score:.2f}"
+                cv2.putText(img_cv2, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+                emotions_detected.append({"emotion": emotion, "score": score})
+
+        # Convertir la imagen procesada de vuelta a base64
+        _, buffer = cv2.imencode('.jpg', img_cv2)
+        img_base64 = base64.b64encode(buffer).decode('utf-8')
+
+        return jsonify({
+            "processed_image": f"data:image/jpeg;base64,{img_base64}",
+            "emotions": emotions_detected
+        })
+
+    except Exception as e:
+        print(f"Error en el servidor: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/')
 def index():
-    return render_template('index.html')  # Asegúrate de que el archivo HTML esté en la carpeta 'templates'
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
