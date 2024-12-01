@@ -6,143 +6,143 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EmoReco</title>
   <style>
-/* Estilo general */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #d5c7f7;
-}
+    /* Estilo general */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #d5c7f7;
+    }
 
-/* Contenedor principal */
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  background-color: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+    /* Contenedor principal */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
-/* Encabezado */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #ffb6c1;
-  padding: 20px;
-}
+    /* Encabezado */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #ffb6c1;
+      padding: 20px;
+    }
 
-.header .logo {
-  background-color: #fff;
-  border-radius: 50%;
-  padding: 10px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  text-align: center;
-}
+    .header .logo {
+      background-color: #fff;
+      border-radius: 50%;
+      padding: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+    }
 
-.header h1 {
-  font-size: 1.8rem;
-  color: #333;
-  margin: 0;
-}
+    .header h1 {
+      font-size: 1.8rem;
+      color: #333;
+      margin: 0;
+    }
 
-/* Contenido principal */
-.main-content {
-  display: flex;
-  padding: 20px;
-  gap: 20px;
-}
+    /* Contenido principal */
+    .main-content {
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+    }
 
-/* Sección de la cámara */
-.camera-section {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    /* Sección de la cámara */
+    .camera-section {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-.camera-display {
-  width: 100%;
-  height: 300px;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f0f0f0;
-  margin-bottom: 20px;
-}
+    .camera-display {
+      width: 100%;
+      height: 300px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f0f0f0;
+      margin-bottom: 20px;
+    }
 
-.camera-controls {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
+    .camera-controls {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
 
-.camera-controls button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: #4caf50;
-  color: white;
-  cursor: pointer;
-  font-size: 1rem;
-}
+    .camera-controls button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4caf50;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+    }
 
-.camera-controls button#btn-apagar {
-  background-color: #f44336;
-}
+    .camera-controls button#btn-apagar {
+      background-color: #f44336;
+    }
 
-.camera-controls button:hover {
-  opacity: 0.8;
-}
+    .camera-controls button:hover {
+      opacity: 0.8;
+    }
 
-.emotion-detected {
-  font-size: 1.2rem;
-  text-align: center;
-  font-weight: bold;
-}
+    .emotion-detected {
+      font-size: 1.2rem;
+      text-align: center;
+      font-weight: bold;
+    }
 
-/* Chatbot */
-.chatbot {
-  flex: 1;
-  background-color: #f9f9f9;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  padding: 20px;
-}
+    /* Chatbot */
+    .chatbot {
+      flex: 1;
+      background-color: #f9f9f9;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+    }
 
-.chatbot h2 {
-  margin-top: 0;
-  font-size: 1.5rem;
-}
+    .chatbot h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
 
-.chatbot textarea {
-  width: 100%;
-  height: 100px;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
+    .chatbot textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
 
-.chatbot button {
-  padding: 10px 20px;
-  background-color: #000;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
+    .chatbot button {
+      padding: 10px 20px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
 
-.chatbot pre {
-  background-color: #eee;
-  padding: 10px;
-  font-family: monospace;
-  border-radius: 5px;
-}
+    .chatbot pre {
+      background-color: #eee;
+      padding: 10px;
+      font-family: monospace;
+      border-radius: 5px;
+    }
   </style>
 </head>
 
@@ -160,7 +160,9 @@ body {
     <main class="main-content">
       <!-- Pantalla de la cámara -->
       <section class="camera-section">
-        <div class="camera-display">Pantalla de la cámara</div>
+        <div class="camera-display">
+          <video id="video" width="100%" height="100%" autoplay></video>
+        </div>
         <div class="camera-controls">
           <button id="btn-prender">Prender</button>
           <button id="btn-apagar">Apagar</button>
@@ -178,69 +180,68 @@ body {
     </main>
   </div>
 
-  <script type="importmap">
-    {
-      "imports": {
-        "@google/generative-ai": "https://esm.run/@google/generative-ai"
-      }
-    }
-  </script>
-
   <script type="module">
-    import { GoogleGenerativeAI } from "@google/generative-ai";
-    const clave = "AIzaSyB_gATiAhoX96cHP0E40YfQO0wvuwlGjv8"; // Copia tu clave aquí
+    // Iniciar la cámara
+    let mediaStream;
+    const videoElement = document.querySelector("#video");
+    const emotionDisplay = document.querySelector("#emotion");
 
-    const genAI = new GoogleGenerativeAI(clave);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-    document.querySelector("#botonConsulta").addEventListener("click", async () => {
-      desactivarBoton();
-      const consulta = document.querySelector("#consulta").value;
-      const resultadoConsulta = document.querySelector("#resultadoConsulta");
+    document.querySelector("#btn-prender").addEventListener("click", async () => {
       try {
-        const result = await model.generateContent(consulta);
-        const response = await result.response;
-        const text = response.text();
-        resultadoConsulta.innerHTML = text;
+        // Solicitar acceso a la cámara
+        mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        videoElement.srcObject = mediaStream;  // Asignar el flujo de video al elemento <video>
+
+        // Detectar emociones del video
+        detectEmotionFromVideo();
       } catch (error) {
-        resultadoConsulta.innerHTML = "Problemas en la consulta";
+        console.error("Error al acceder a la cámara: ", error);
+        emotionDisplay.textContent = "No se pudo acceder a la cámara.";  // Mostrar mensaje de error
       }
-      activarBoton();
     });
 
-    function desactivarBoton() {
-      const botonConsulta = document.querySelector("#botonConsulta");
-      botonConsulta.disabled = true;
-      botonConsulta.innerText = "Consultando...";
-    }
+    // Función para detectar emociones del video en tiempo real
+    async function detectEmotionFromVideo() {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
 
-    function activarBoton() {
-      const botonConsulta = document.querySelector("#botonConsulta");
-      botonConsulta.disabled = false;
-      botonConsulta.innerText = "Consultar";
-    }
+      // Se usará el mismo tamaño que el video
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
 
-    // Agregar funcionalidad al botón "Prender"
-    document.querySelector("#btn-prender").addEventListener("click", async () => {
-      const emotionDisplay = document.querySelector("#emotion");
+      // Cada vez que el video se actualiza, capturamos el fotograma y lo analizamos
+      setInterval(async () => {
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL("image/jpeg");
 
-      try {
-        const response = await fetch("http://127.0.0.1:5000/Reconocimiento_F", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ image_path: "C:\Users\Sanma\Desktop\Reconocimiento Facial\Data" }),
-        });
+        // Llamada al servidor para detectar emociones a partir de la imagen capturada
+        try {
+          const response = await fetch("http://127.0.0.1:5000/Reconocimiento_F", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ image_path: imageData }), // Enviar el fotograma como imagen base64
+          });
 
-        const data = await response.json();
-        if (data.error) {
-          emotionDisplay.textContent = `Error: ${data.error}`;
-        } else {
-          emotionDisplay.textContent = `${data.emotion} (${data.score})`;
+          const data = await response.json();
+          if (data.error) {
+            emotionDisplay.textContent = `Error: ${data.error}`;
+          } else {
+            emotionDisplay.textContent = `${data.emotion} (${data.score})`;  // Mostrar la emoción detectada
+          }
+        } catch (error) {
+          emotionDisplay.textContent = "Error en la conexión con el servidor.";
         }
-      } catch (error) {
-        emotionDisplay.textContent = "Error en la conexión con el servidor.";
+      }, 1000); // Detectar emociones cada segundo
+    }
+
+    // Detener la cámara
+    document.querySelector("#btn-apagar").addEventListener("click", () => {
+      if (mediaStream) {
+        let tracks = mediaStream.getTracks();
+        tracks.forEach(track => track.stop());  // Detener todas las pistas de video
+        videoElement.srcObject = null;  // Desconectar el flujo de video
       }
     });
   </script>
