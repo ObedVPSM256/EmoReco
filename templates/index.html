@@ -1,150 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EmoReco</title>
-  <style>
-    /* Estilo general */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #d5c7f7;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmoReco</title>
+    <style>
+      /* Estilos generales */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #d5c7f7;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    /* Contenedor principal */
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background-color: #fff;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+/* Contenedor principal */
+.container {
+  width: 95%; /* Aumentado para ser más ancho */
+  max-width: 1200px; /* Máximo ancho aumentado */
+  margin: 20px auto;
+  background-color: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease; /* Animación suave al cargar */
+}
 
-    /* Encabezado */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #ffb6c1;
-      padding: 20px;
-    }
+/* Encabezado */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffb6c1;
+  padding: 20px;
+  animation: fadeIn 0.5s ease-out; /* Animación de aparición */
+}
 
-    .header .logo {
-      background-color: #fff;
-      border-radius: 50%;
-      padding: 10px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      text-align: center;
-    }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-    .header h1 {
-      font-size: 1.8rem;
-      color: #333;
-      margin: 0;
-    }
+.header .logo {
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 15px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
 
-    /* Contenido principal */
-    .main-content {
-      display: flex;
-      padding: 20px;
-      gap: 20px;
-    }
+.header .logo:hover {
+  transform: scale(1.05);
+}
 
-    /* Sección de la cámara */
-    .camera-section {
-      flex: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+.header h1 {
+  font-size: 2.2rem;
+  color: #333;
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
 
-    .camera-display {
-      width: 100%;
-      height: 300px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f0f0f0;
-      margin-bottom: 20px;
-    }
+/* Contenido principal */
+.main-content {
+  display: flex;
+  flex-direction: row;
+  padding: 30px;
+  gap: 30px;
+}
 
-    .camera-controls {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
+/* Sección de la cámara */
+.camera-section {
+  flex: 3; /* Aumentado para dar más espacio */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-    .camera-controls button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background-color: #4caf50;
-      color: white;
-      cursor: pointer;
-      font-size: 1rem;
-    }
+.camera-display {
+  width: 100%;
+  height: 400px; /* Aumentado para mejor visualización */
+  border: 3px solid #ccc;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
 
-    .camera-controls button#btn-apagar {
-      background-color: #f44336;
-    }
+.camera-display:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
 
-    .camera-controls button:hover {
-      opacity: 0.8;
-    }
+.camera-controls {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
 
-    .emotion-detected {
-      font-size: 1.2rem;
-      text-align: center;
-      font-weight: bold;
-    }
+.camera-controls button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 25px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-    /* Chatbot */
-    .chatbot {
-      flex: 1;
-      background-color: #f9f9f9;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      padding: 20px;
-    }
+.camera-controls button#btn-apagar {
+  background-color: #f44336;
+}
 
-    .chatbot h2 {
-      margin-top: 0;
-      font-size: 1.5rem;
-    }
+.camera-controls button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
 
-    .chatbot textarea {
-      width: 100%;
-      height: 100px;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
+.emotion-detected {
+  font-size: 1.3rem;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #e9e9e9;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
 
-    .chatbot button {
-      padding: 10px 20px;
-      background-color: #000;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+/* Chatbot */
+.chatbot {
+  flex: 2;
+  background-color: #f9f9f9;
+  border: 2px solid #ccc;
+  border-radius: 15px;
+  padding: 25px;
+  transition: all 0.3s ease;
+}
 
-    .chatbot pre {
-      background-color: #eee;
-      padding: 10px;
-      font-family: monospace;
-      border-radius: 5px;
-    }
-  </style>
-</head>
+.chatbot:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.chatbot h2 {
+  margin-top: 0;
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.chatbot textarea {
+  width: 93%;
+  height: 120px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.chatbot textarea:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.chatbot button {
+  padding: 12px 25px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.chatbot button:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+}
+
+.chatbot pre {
+  background-color: #eee;
+  padding: 15px;
+  font-family: 'Courier New', monospace;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Imagen procesada */
+#processedImage {
+  max-width: 100%;
+  border: 3px solid #ccc;
+  border-radius: 15px;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+#processedImage:hover {
+  transform: scale(1.02);
+}
+
+/* Media queries para responsividad */
+@media (max-width: 1024px) {
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .camera-section, .chatbot {
+    flex: 1;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .header .logo {
+    margin-bottom: 15px;
+  }
+  
+  .camera-display {
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .camera-controls {
+    flex-direction: column;
+  }
+  
+  .camera-controls button {
+    width: 100%;
+  }
+}
+    </style>
+  </head>
 <body>
     <div class="container">
         <header class="header">
@@ -174,11 +288,28 @@
         </main>
     </div>
 
-    <script>
+    <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+    </script>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai"
+        const clave = "AIzaSyB_gATiAhoX96cHP0E40YfQO0wvuwlGjv8"  // copiar su clave
+
+        const genAI = new GoogleGenerativeAI(clave)
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" })
+
         let mediaStream;
         const videoElement = document.getElementById("video");
         const emotionDisplay = document.getElementById("emotion");
         const processedImage = document.getElementById("processedImage");
+        const consultaTextarea = document.getElementById("consulta");
+        const botonConsulta = document.getElementById("botonConsulta");
+        const resultadoConsulta = document.getElementById("resultadoConsulta");
 
         document.getElementById("btn-prender").addEventListener("click", async () => {
             try {
@@ -221,6 +352,11 @@
                         if (data.emotions && data.emotions.length > 0) {
                             const emotionText = data.emotions.map(e => `${e.emotion}: ${e.score.toFixed(2)}`).join(', ');
                             emotionDisplay.textContent = `Emociones detectadas: ${emotionText}`;
+                            
+                            // Enviar automáticamente la emoción al chatbot
+                            const consulta = `Estoy sintiendo emociones: ${emotionText}. ¿Puedes ayudarme a entender y manejar estas emociones?`;
+                            consultaTextarea.value = consulta;
+                            await enviarConsultaAutomaticamente(consulta);
                         } else {
                             emotionDisplay.textContent = "No se detectaron emociones";
                         }
@@ -238,12 +374,42 @@
             processFrame();
         }
 
+        // Función para enviar consulta automáticamente
+        async function enviarConsultaAutomaticamente(consulta) {
+            desactivarBoton();
+            try {
+                const result = await model.generateContent(consulta);
+                const response = await result.response;
+                const text = response.text();
+                resultadoConsulta.innerHTML = text;
+            } catch (error) {
+                resultadoConsulta.innerHTML = 'Problemas en la consulta';
+            }
+            activarBoton();
+        }
+
+        // Evento para consulta manual
+        botonConsulta.addEventListener("click", async () => {
+            const consulta = consultaTextarea.value;
+            await enviarConsultaAutomaticamente(consulta);
+        });
+
         document.getElementById("btn-apagar").addEventListener("click", () => {
             if (mediaStream) {
                 mediaStream.getTracks().forEach((track) => track.stop());
                 videoElement.srcObject = null;
             }
         });
+
+        function desactivarBoton() {
+            botonConsulta.disabled = true;
+            botonConsulta.innerText = "Consultando...";
+        }
+
+        function activarBoton() {
+            botonConsulta.disabled = false;
+            botonConsulta.innerText = "Consultar";
+        }
     </script>
 </body>
 </html>
