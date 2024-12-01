@@ -3,6 +3,10 @@ import cv2
 import os
 from fer import FER
 from flask_cors import CORS
+import base64
+from io import BytesIO
+import numpy as np
+from PIL import Image
 
 app = Flask(__name__)
 CORS(app)  # Esto habilita CORS
@@ -16,18 +20,22 @@ def reconocimiento_facial():
     if request.method == 'POST':
         try:
             data = request.get_json()
-            image_path = data.get("image_path")
+            image_data = data.get("image_data")
         
-            if not image_path or not os.path.exists(image_path):
-                return jsonify({"error": "Imagen no encontrada o ruta inválida"}), 400
-        
-            # Leer la imagen
-            image = cv2.imread(image_path)
-            if image is None:
-                return jsonify({"error": "No se pudo leer la imagen"}), 400
+            if not image_data:
+                return jsonify({"error": "No se recibió imagen"}), 400
+            
+            # Decodificar la imagen base64
+            image_data = image_data.split(",")[1]  # Eliminar el prefijo "data:image/jpeg;base64,"
+            img_bytes = base64.b64decode(image_data)
+            img = Image.open(BytesIO(img_bytes))
+
+            # Convertir a imagen de OpenCV para el análisis
+            img = np.array(img)
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
             # Detectar la emoción en la imagen
-            emotion, score = emotion_detector.top_emotion(image)
+            emotion, score = emotion_detector.top_emotion(img)
         
             if emotion:
                 return jsonify({"emotion": emotion, "score": score})
