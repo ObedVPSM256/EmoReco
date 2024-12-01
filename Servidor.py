@@ -1,4 +1,4 @@
-sfrom flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template
 import cv2
 import os
 from fer import FER
