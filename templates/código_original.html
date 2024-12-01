@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmoReco</title>
+  <style>
+/* Estilo general */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #d5c7f7;
+}
+
+/* Contenedor principal */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Encabezado */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffb6c1;
+  padding: 20px;
+}
+
+.header .logo {
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+}
+
+/* Contenido principal */
+.main-content {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Sección de la cámara */
+.camera-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.camera-display {
+  width: 100%;
+  height: 300px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.camera-controls {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.camera-controls button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.camera-controls button#btn-apagar {
+  background-color: #f44336;
+}
+
+.camera-controls button:hover {
+  opacity: 0.8;
+}
+
+.emotion-detected {
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Chatbot */
+.chatbot {
+  flex: 1;
+  background-color: #f9f9f9;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.chatbot h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+}
+
+.chatbot textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.chatbot button {
+  padding: 10px 20px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.chatbot pre {
+  background-color: #eee;
+  padding: 10px;
+  font-family: monospace;
+  border-radius: 5px;
+}
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Encabezado -->
+    <header class="header">
+      <div class="logo">
+        <span>Logo</span>
+      </div>
+      <h1>EmoReco</h1>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <!-- Pantalla de la cámara -->
+      <section class="camera-section">
+        <div class="camera-display">Pantalla de la cámara</div>
+        <div class="camera-controls">
+          <button id="btn-prender">Prender</button>
+          <button id="btn-apagar">Apagar</button>
+        </div>
+        <div class="emotion-detected">Emoción detectada: <span id="emotion">Ninguna</span></div>
+      </section>
+
+      <!-- Chatbot -->
+      <aside class="chatbot">
+        <h2>Formulario de Consulta</h2>
+        <textarea id="consulta"></textarea>
+        <button id="botonConsulta">Consultar</button>
+        <pre id="resultadoConsulta"></pre>
+      </aside>
+    </main>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+    const clave = "AIzaSyB_gATiAhoX96cHP0E40YfQO0wvuwlGjv8"; // Copia tu clave aquí
+
+    const genAI = new GoogleGenerativeAI(clave);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+    document.querySelector("#botonConsulta").addEventListener("click", async () => {
+      desactivarBoton();
+      const consulta = document.querySelector("#consulta").value;
+      const resultadoConsulta = document.querySelector("#resultadoConsulta");
+      try {
+        const result = await model.generateContent(consulta);
+        const response = await result.response;
+        const text = response.text();
+        resultadoConsulta.innerHTML = text;
+      } catch (error) {
+        resultadoConsulta.innerHTML = "Problemas en la consulta";
+      }
+      activarBoton();
+    });
+
+    function desactivarBoton() {
+      const botonConsulta = document.querySelector("#botonConsulta");
+      botonConsulta.disabled = true;
+      botonConsulta.innerText = "Consultando...";
+    }
+
+    function activarBoton() {
+      const botonConsulta = document.querySelector("#botonConsulta");
+      botonConsulta.disabled = false;
+      botonConsulta.innerText = "Consultar";
+    }
+
+    // Agregar funcionalidad al botón "Prender"
+    document.querySelector("#btn-prender").addEventListener("click", async () => {
+      const emotionDisplay = document.querySelector("#emotion");
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/Reconocimiento_F", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ image_path: "C:\Users\Sanma\Desktop\Reconocimiento Facial\Data" }),
+        });
+
+        const data = await response.json();
+        if (data.error) {
+          emotionDisplay.textContent = `Error: ${data.error}`;
+        } else {
+          emotionDisplay.textContent = `${data.emotion} (${data.score})`;
+        }
+      } catch (error) {
+        emotionDisplay.textContent = "Error en la conexión con el servidor.";
+      }
+    });
+  </script>
+</body>
+
+</html>
