@@ -145,106 +145,105 @@
     }
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <!-- Encabezado -->
-    <header class="header">
-      <div class="logo">
-        <span>Logo</span>
-      </div>
-      <h1>EmoReco</h1>
-    </header>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span>Logo</span>
+            </div>
+            <h1>EmoReco</h1>
+        </header>
+        <main class="main-content">
+            <section class="camera-section">
+                <div class="camera-display">
+                    <video id="video" width="100%" height="100%" autoplay></video>
+                </div>
+                <div class="camera-controls">
+                    <button id="btn-prender">Prender</button>
+                    <button id="btn-apagar">Apagar</button>
+                </div>
+                <div class="emotion-detected">Emoción detectada: <span id="emotion">Ninguna</span></div>
+                <img id="processedImage" src="" alt="Imagen Procesada" style="max-width: 100%; border: 2px solid #ccc; margin-top: 20px;">
+            </section>
+            <aside class="chatbot">
+                <h2>Formulario de Consulta</h2>
+                <textarea id="consulta"></textarea>
+                <button id="botonConsulta">Consultar</button>
+                <pre id="resultadoConsulta"></pre>
+            </aside>
+        </main>
+    </div>
 
-    <!-- Contenido principal -->
-    <main class="main-content">
-      <!-- Pantalla de la cámara -->
-      <section class="camera-section">
-        <div class="camera-display">
-          <video id="video" width="100%" height="100%" autoplay></video>
-        </div>
-        <div class="camera-controls">
-          <button id="btn-prender">Prender</button>
-          <button id="btn-apagar">Apagar</button>
-        </div>
-        <div class="emotion-detected">Emoción detectada: <span id="emotion">Ninguna</span></div>
-      </section>
+    <script>
+        let mediaStream;
+        const videoElement = document.getElementById("video");
+        const emotionDisplay = document.getElementById("emotion");
+        const processedImage = document.getElementById("processedImage");
 
-      <!-- Chatbot -->
-      <aside class="chatbot">
-        <h2>Formulario de Consulta</h2>
-        <textarea id="consulta"></textarea>
-        <button id="botonConsulta">Consultar</button>
-        <pre id="resultadoConsulta"></pre>
-      </aside>
-    </main>
-  </div>
+        document.getElementById("btn-prender").addEventListener("click", async () => {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoElement.srcObject = mediaStream;
+                detectEmotionFromVideo();
+            } catch (error) {
+                console.error("Error al acceder a la cámara:", error);
+                emotionDisplay.textContent = "No se pudo acceder a la cámara.";
+            }
+        });
 
-  <script type="module">
-    // Iniciar la cámara
-    let mediaStream;
-    const videoElement = document.querySelector("#video");
-    const emotionDisplay = document.querySelector("#emotion");
+        async function detectEmotionFromVideo() {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
 
-    document.querySelector("#btn-prender").addEventListener("click", async () => {
-      try {
-        // Solicitar acceso a la cámara
-        mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        videoElement.srcObject = mediaStream;  // Asignar el flujo de video al elemento <video>
+            async function processFrame() {
+                if (videoElement.videoWidth === 0 || videoElement.videoHeight === 0) {
+                    requestAnimationFrame(processFrame);
+                    return;
+                }
 
-        // Detectar emociones del video
-        detectEmotionFromVideo();
-      } catch (error) {
-        console.error("Error al acceder a la cámara: ", error);
-        emotionDisplay.textContent = "No se pudo acceder a la cámara.";  // Mostrar mensaje de error
-      }
-    });
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL("image/jpeg");
 
-    // Función para detectar emociones del video en tiempo real
-    async function detectEmotionFromVideo() {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
+                try {
+                    const response = await fetch("http://127.0.0.1:5000/Reconocimiento_F", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ image_data: imageData }),
+                    });
 
-      // Se usará el mismo tamaño que el video
-      canvas.width = videoElement.videoWidth;
-      canvas.height = videoElement.videoHeight;
+                    const data = await response.json();
+                    if (data.processed_image) {
+                        processedImage.src = data.processed_image;
+                        if (data.emotions && data.emotions.length > 0) {
+                            const emotionText = data.emotions.map(e => `${e.emotion}: ${e.score.toFixed(2)}`).join(', ');
+                            emotionDisplay.textContent = `Emociones detectadas: ${emotionText}`;
+                        } else {
+                            emotionDisplay.textContent = "No se detectaron emociones";
+                        }
+                    } else {
+                        emotionDisplay.textContent = "No se detectaron rostros";
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    emotionDisplay.textContent = "Error en la conexión con el servidor.";
+                }
 
-      // Cada vez que el video se actualiza, capturamos el fotograma y lo analizamos
-      setInterval(async () => {
-        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-        const imageData = canvas.toDataURL("image/jpeg");
+                requestAnimationFrame(processFrame);
+            }
 
-        // Llamada al servidor para detectar emociones a partir de la imagen capturada
-        try {
-          const response = await fetch("http://127.0.0.1:5000/Reconocimiento_F", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ image_path: imageData }), // Enviar el fotograma como imagen base64
-          });
-
-          const data = await response.json();
-          if (data.error) {
-            emotionDisplay.textContent = `Error: ${data.error}`;
-          } else {
-            emotionDisplay.textContent = `${data.emotion} (${data.score})`;  // Mostrar la emoción detectada
-          }
-        } catch (error) {
-          emotionDisplay.textContent = "Error en la conexión con el servidor.";
+            processFrame();
         }
-      }, 1000); // Detectar emociones cada segundo
-    }
 
-    // Detener la cámara
-    document.querySelector("#btn-apagar").addEventListener("click", () => {
-      if (mediaStream) {
-        let tracks = mediaStream.getTracks();
-        tracks.forEach(track => track.stop());  // Detener todas las pistas de video
-        videoElement.srcObject = null;  // Desconectar el flujo de video
-      }
-    });
-  </script>
+        document.getElementById("btn-apagar").addEventListener("click", () => {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach((track) => track.stop());
+                videoElement.srcObject = null;
+            }
+        });
+    </script>
 </body>
-
 </html>
